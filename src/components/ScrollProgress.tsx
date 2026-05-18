@@ -1,4 +1,3 @@
-// src/components/ScrollProgress.tsx
 import { useEffect, useState } from "react";
 
 export default function ScrollProgress() {
@@ -7,19 +6,21 @@ export default function ScrollProgress() {
   useEffect(() => {
     const handleScroll = () => {
       const winScroll = window.scrollY;
-      const height = document.documentElement.scrollHeight - window.innerHeight;
-      const scrolled = (winScroll / height) * 100;
-      setWidth(scrolled);
+      const height    = document.documentElement.scrollHeight - window.innerHeight;
+      setWidth((winScroll / height) * 100);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-1 z-[100]">
+    <div className="fixed top-0 left-0 w-full h-px z-[100]">
       <div
-        className="h-full bg-gradient-to-r from-[#71f9e4] via-[#4ce3c9] to-[#3566fa] transition-all"
-        style={{ width: `${width}%` }}
+        className="h-full transition-[width] duration-75"
+        style={{
+          width: `${width}%`,
+          background: 'linear-gradient(90deg, rgb(160, 224, 171), rgb(255, 172, 46) 50%, rgb(165, 45, 37))',
+        }}
       />
     </div>
   );

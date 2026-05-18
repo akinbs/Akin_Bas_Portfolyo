@@ -1,80 +1,63 @@
-// src/components/Testimonials.tsx
 import { motion } from "framer-motion";
+import { useLang } from "../context/LangContext";
 
-const testimonials = [
-  {
-    name: "Elif K.",
-    content: "Gerçekten hızlı ve modern bir site teslim aldık. Her detay özenliydi. Teşekkürler!",
-    title: "Startup Founder"
-  },
-  {
-    name: "Ahmet B.",
-    content: "Portfolyo şablonu çok şık ve etkileyici, müşterilerimden güzel dönüşler aldım.",
-    title: "Freelancer"
-  },
-  {
-    name: "Zeynep Y.",
-    content: "Birebir istediğim gibi, hatta daha fazlası oldu. Proje yönetimi ve iletişim de çok iyiydi.",
-    title: "Ajans Yöneticisi"
-  },
-  {
-    name: "Murat D.",
-    content: "E-ticaret sitemiz için yaptığı çalışma mükemmeldi. Performans ve kullanıcı deneyimi harika!",
-    title: "E-ticaret Müdürü"
-  },
-  {
-    name: "Selin A.",
-    content: "Responsive tasarım ve animasyonlar çok etkileyici. Müşterilerim sürekli sitemi övüyor.",
-    title: "Kurumsal Müşteri"
-  },
-  {
-    name: "Emre T.",
-    content: "API entegrasyonu ve backend geliştirme konusunda gerçekten uzman. Zamanında teslim aldık.",
-    title: "Yazılım Müdürü"
-  },
-  {
-    name: "Ayşe M.",
-    content: "Mobil uyumlu ve hızlı çalışan bir platform geliştirdi. Sonuçlardan çok memnunuz.",
-    title: "Dijital Pazarlama Uzmanı"
-  },
-  {
-    name: "Can O.",
-    content: "Modern teknolojiler kullanarak hayal ettiğimiz projeyi hayata geçirdi. Profesyonel yaklaşım!",
-    title: "Proje Yöneticisi"
-  },
-    {
-    name: "Ali D.",
-    content: "Güzel iş ahlakı ve anlayış. Hızlı geri dönüş ve pratik iş ortaklığın için teşekkürler",
-    title: "Şirket Sahibi"
-  },
-];
+function getInitials(name: string) {
+  return name.split(" ").map(n => n[0]).join("").toUpperCase();
+}
 
 export default function Testimonials() {
+  const { t } = useLang();
+
   return (
-    <motion.section
-      className="max-w-6xl mx-auto my-16 px-4"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.7 }}
-    >
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white/90">Müşteri Yorumları</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {testimonials.map((t, i) => (
-          <motion.div
-            key={i}
-            className="bg-white/60 dark:bg-black/40 rounded-2xl p-6 shadow-xl"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}>
-            <p className="text-lg italic mb-3 text-gray-700 dark:text-gray-300">"{t.content}"</p>
-            <div className="flex gap-3 items-center mt-2">
-              <span className="font-bold text-[#4ce3c9]">{t.name}</span>
-              <span className="text-gray-600 dark:text-gray-300">| {t.title}</span>
-            </div>
-          </motion.div>
-        ))}
+    <section className="py-28 px-6 bg-black">
+      <div className="max-w-[1078px] mx-auto">
+
+        <motion.div
+          className="flex items-baseline gap-5 mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="section-number">05</span>
+          <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight">{t.testimonials.heading}</h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {t.testimonials.items.map((item, i) => (
+            <motion.div
+              key={i}
+              className="card-dark p-6 flex flex-col justify-between"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ delay: i * 0.06, duration: 0.5 }}
+            >
+              <div className="flex gap-1 mb-5">
+                {Array.from({ length: 5 }).map((_, s) => (
+                  <svg key={s} className="w-3 h-3 text-white/35" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+
+              <p className="text-sm text-white/55 leading-relaxed font-light flex-1 mb-6">
+                "{item.content}"
+              </p>
+
+              <div className="flex items-center gap-3 pt-4 border-t border-white/6">
+                <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs font-light text-white/65">{getInitials(item.name)}</span>
+                </div>
+                <div>
+                  <p className="text-sm font-light text-white/80">{item.name}</p>
+                  <p className="text-xs text-white/32 font-light">{item.title}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

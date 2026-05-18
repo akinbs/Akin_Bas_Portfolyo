@@ -1,5 +1,5 @@
-import { useState, lazy, Suspense } from "react";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { useState, useEffect, lazy, Suspense } from "react";
+import { LangProvider } from "./context/LangContext";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Loader from "./components/Loader";
@@ -7,38 +7,85 @@ import ScrollProgress from "./components/ScrollProgress";
 import FloatingActionMenu from "./components/FloatingActionMenu";
 import CustomCursor from "./components/CustomCursor";
 
-const About = lazy(() => import("./components/About"));
-const Projects = lazy(() => import("./components/Projects"));
-const TechStack = lazy(() => import("./components/TechStack"));
+const About        = lazy(() => import("./components/About"));
+const Projects     = lazy(() => import("./components/Projects"));
+const TechStack    = lazy(() => import("./components/TechStack"));
 const Achievements = lazy(() => import("./components/Achievements"));
-const Testimonials = lazy(() => import("./components/Testimonials"));
-const Contact = lazy(() => import("./components/Contact"));
-const Footer = lazy(() => import("./components/Footer"));
+const Contact      = lazy(() => import("./components/Contact"));
+const Footer       = lazy(() => import("./components/Footer"));
 
 function App() {
   const [loaded, setLoaded] = useState(false);
-  
+
+  useEffect(() => {
+    if (!loaded) return;
+
+    const cycle = ['AKIN BAS', '· AKIN BAS ·'];
+    let i = 0;
+    let ticker: ReturnType<typeof setInterval>;
+    let reset: ReturnType<typeof setTimeout>;
+
+    const startTicker = () => {
+      ticker = setInterval(() => {
+        i = (i + 1) % cycle.length;
+        document.title = cycle[i];
+      }, 2600);
+    };
+
+    const onVisibility = () => {
+      clearInterval(ticker);
+      clearTimeout(reset);
+      if (document.hidden) {
+        document.title = '← come back.';
+      } else {
+        document.title = '✦ welcome back!';
+        reset = setTimeout(() => {
+          document.title = 'AKIN BAS';
+          i = 0;
+          startTicker();
+        }, 2000);
+      }
+    };
+
+    document.title = 'AKIN BAS';
+    document.addEventListener('visibilitychange', onVisibility);
+    startTicker();
+
+    return () => {
+      clearInterval(ticker);
+      clearTimeout(reset);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [loaded]);
+
   if (!loaded) return <Loader finish={() => setLoaded(true)} />;
-  
+
   return (
-    <ThemeProvider>
-      <div className="bg-gradient-to-br from-[#fafcff] to-[#c3cfe2] dark:from-[#0e1118] dark:to-[#2c5364] min-h-screen transition-colors duration-300">
-        <CustomCursor />
-        <ScrollProgress />
-        <Navbar />
+    <LangProvider>
+    <div className="relative min-h-screen overflow-x-clip bg-black">
+      <CustomCursor />
+      <ScrollProgress />
+      <Navbar />
+
+      <main>
         <Hero />
-        <Suspense fallback={<div className="flex justify-center items-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#71f9e4]"></div></div>}>
+        <Suspense fallback={
+          <div className="flex justify-center items-center py-24">
+            <div className="w-8 h-8 border border-white/15 border-t-white/70 rounded-full animate-spin" />
+          </div>
+        }>
           <About />
           <Projects />
           <TechStack />
           <Achievements />
-          <Testimonials />
           <Contact />
           <Footer />
         </Suspense>
-        <FloatingActionMenu />
-      </div>
-    </ThemeProvider>
+      </main>
+
+      <FloatingActionMenu />
+    </div>
+    </LangProvider>
   );
 }
 

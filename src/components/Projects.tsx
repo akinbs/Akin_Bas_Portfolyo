@@ -1,407 +1,798 @@
-// src/components/Projects.tsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "../context/LangContext";
 
 interface Project {
-  id: string;
-  title: string;
-  desc: string;
-  image: string;
-  tags: string[];
-  link: string;
-  category: string;
-  status: string;
-  details: string;
-  mockups: string[];
+  id:         string;
+  title:      string;
+  image:      string;
+  imageFit?:  "cover" | "contain";
+  tags:       string[];
+  link:       string;
+  demoLink?:  string;
+  category:   string;
+  status:     string;
+  mockups:     string[];
+  mockupFit?:  "cover" | "contain";
+  mockupType?: "phone" | "desktop";
+  tr:         { desc: string; details: string; highlights?: string[]; architecture?: string };
+  en:         { desc: string; details: string; highlights?: string[]; architecture?: string };
 }
 
 const projects: Project[] = [
   {
-    id: 'pharmahan',
-    title: "Pharmahan Eczane Pazaryeri",
-    desc: "Modern UI, hızlı arama, kolay eczane-kullanıcı etkileşimi.",
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop",
-    tags: ["React", "TypeScript", "Node.js", "Stripe API"],
-    link: "#",
-    category: "E-Commerce",
-    status: "Live",
-    details: "Türkiye'nin ilk eczane pazar yeri! Kullanıcılar modern bir arayüzle eczanelerle kolayca iletişime geçiyor. Arka planda güçlü bir TypeScript API ile Stripe ödeme entegrasyonu mevcut.",
-    mockups: [
-      "https://images.unsplash.com/photo-1556909114-4f7b1b0d0e6c?w=800&h=600&fit=crop", // Pharmacy dashboard
-      "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=600&fit=crop", // Medical products grid
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop"  // Medicine search interface
+    id:        "voltora",
+    title:     "Voltora Electronics",
+    image:     "/voltora/cover.png",
+    imageFit:  "contain",
+    tags:      ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion", "React Router DOM", "Lucide React", "Firebase"],
+    link:      "https://github.com/akinbs/Voltora",
+    category:  "E-Commerce",
+    status:    "Live",
+    mockups:   [
+      "/voltora/01-hero.png",
+      "/voltora/03-categories.png",
+      "/voltora/04-products.png",
+      "/voltora/05-newarrivals.png",
+      "/voltora/06-cart.png",
+      "/voltora/07-listing.png",
     ],
+    mockupFit: "contain",
+    tr: {
+      desc: "Elektronik parçalar ve geliştirme kartları için tasarlanmış premium e-ticaret frontend'i. React, TypeScript ve Framer Motion ile geliştirilmiş, Firebase entegrasyonuna hazır tam kapsamlı alışveriş arayüzü.",
+      details: "Voltora, elektronik parçalar, sensörler, geliştirme kartları ve maker ekipmanlarına yönelik geliştirilmiş premium bir e-ticaret frontend projesidir. Neo Lab Store konseptiyle tasarlanan platform; mühendisler, öğrenciler ve maker topluluğu için temiz, işlevsel ve modern bir alışveriş deneyimi sunar.\n\nReact ve TypeScript kombinasyonu type-safe bir geliştirme ortamı sağlarken, Framer Motion ile sayfa geçişleri ve mikro animasyonlar arayüzü dinamik bir deneyime taşıyor. Ürün keşfinden ödeme akışına kadar modern bir e-ticaret platformunun beklediği tüm frontend akışlarını eksiksiz içermektedir.\n\nFirebase Authentication ve Firestore entegrasyonuna hazır bir mimari üzerine inşa edilmiştir. Backend bağlandığı anda üretime alınabilir duruma gelecek olan Voltora, kapsamlı bir frontend referans proje niteliği taşımaktadır.",
+      highlights: [
+        "Kategori bazlı ürün keşif sistemi",
+        "Gelişmiş filtreleme, arama ve sıralama",
+        "Grid / Liste görünüm geçişi",
+        "Ürün detay sayfası ve teknik özellik tablosu",
+        "Sepet yönetimi ve checkout mock akışı",
+        "Wishlist sayfası",
+        "Login, register ve forgot password UI",
+        "Profil dashboard, siparişler ve ayarlar",
+        "Framer Motion sayfa geçişleri ve animasyonlar",
+        "Açılır/kapanır sidebar navigasyon",
+      ],
+    },
+    en: {
+      desc: "A premium electronics e-commerce frontend built on the Neo Lab Store concept. Full shopping flow from product discovery to checkout, Firebase-ready architecture.",
+      details: "Voltora is a premium electronics e-commerce frontend built on the Neo Lab Store concept, targeting engineers, students, and the maker community. It delivers a clean, modern shopping experience covering the full product-to-checkout flow.\n\nReact and TypeScript provide a type-safe foundation, while Framer Motion drives page transitions and micro-interactions. The project includes category browsing, advanced filtering and sorting, product detail pages with spec tables, cart management, wishlist, and a full user account section.\n\nThe architecture is Firebase-ready — Authentication and Firestore integration is in place, making the platform production-deployable the moment the backend is connected.",
+      highlights: [
+        "Category-based product discovery",
+        "Advanced filtering, search and sorting",
+        "Grid / List view toggle",
+        "Product detail page with spec table",
+        "Cart management and mock checkout flow",
+        "Wishlist page",
+        "Login, register and forgot password UI",
+        "Profile dashboard, orders and settings",
+        "Framer Motion transitions and micro-animations",
+        "Collapsible sidebar navigation",
+      ],
+    },
   },
   {
-    id: 'ai-summarizer',
-    title: "Akademik AI Metin Özetleme Botu",
-    desc: "GPT destekli, makale özetleyen, PDF ve Word entegrasyonlu web app.",
-    image: "https://images.unsplash.com/photo-1655635949384-f737c5133dfe?w=800&h=400&fit=crop",
-    tags: ["Python", "Flask", "GPT", "OCR"],
-    link: "#",
-    category: "AI/ML",
-    status: "Live",
-    details: "Yapay zeka ile akademik metin özetleme. PDF, Word dosyalarını yükle, özetini anında al. Flask backend, GPT desteği, OCR modülü ve kullanıcı dostu arayüz.",
-    mockups: [
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop", // AI interface
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop", // Document upload
-      "https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?w=800&h=600&fit=crop"  // Text analysis
+    id:        "estateflow",
+    title:     "EstateFlow",
+    image:     "/estateflow/cover.png",
+    imageFit:  "contain",
+    tags:      ["React", "TypeScript", "FastAPI", "Python", "Firebase Auth", "Firestore", "Firebase Storage", "Zustand", "Axios", "Leaflet", "Tailwind CSS"],
+    link:      "https://github.com/akinbs/EstateFlow",
+    category:  "Full-Stack",
+    status:    "Live",
+    mockups:   [
+      "/estateflow/01-hero.png",
+      "/estateflow/02-listings.png",
+      "/estateflow/03-detail-map.png",
+      "/estateflow/04-admin-dashboard.png",
+      "/estateflow/05-admin-listings.png",
+      "/estateflow/06-admin-new.png",
     ],
+    mockupFit: "contain",
+    tr: {
+      desc: "Satılık ve kiralık emlak ilanlarını harita destekli modern bir arayüzde listeleyen, FastAPI backend ve Firebase altyapısıyla geliştirilmiş full-stack bir emlak platformu.",
+      details: "EstateFlow, frontend demo değil gerçek bir ürün mimarisiyle geliştirilmiş full-stack bir emlak platformudur. React frontend, ilan verilerini doğrudan Firestore'dan okumaz; tüm CRUD işlemleri FastAPI üzerinden yönetilir. Kullanıcı Firebase Auth ile giriş yapar, backend Firebase Admin SDK ile token'ı doğrular ve rol kontrolü uygular. Admin işlemleri backend tarafında role guard ile korunur; ilanlar Storage'a yüklenen görselleriyle birlikte FastAPI → Firestore akışıyla kaydedilir.",
+      highlights: [
+        "Grid / Liste / Harita görünüm modları",
+        "Leaflet + OpenStreetMap harita entegrasyonu",
+        "Gelişmiş filtreleme ve query param senkronizasyonu",
+        "İlan favorileme ve karşılaştırma",
+        "Firebase Auth + FastAPI token doğrulama",
+        "Rol tabanlı erişim kontrolü (RBAC)",
+        "Firebase Storage görsel yükleme akışı",
+        "Soft delete ve ilan durum yönetimi",
+        "Lead / müşteri talebi takibi",
+        "Admin dashboard istatistikleri",
+      ],
+      architecture: "React → FastAPI → Firestore\nFirebase Auth token → Admin SDK doğrulama → Role Guard\nAdmin: Storage upload → URL + metadata → FastAPI → Firestore",
+    },
+    en: {
+      desc: "A full-stack real estate platform built with React, FastAPI, and Firebase — featuring map-based listing, role-based admin panel, and secure token authentication.",
+      details: "EstateFlow is a full-stack real estate platform built with a real product architecture, not a frontend demo. The React frontend never reads or writes property data directly to Firestore — all CRUD operations go through FastAPI. Users authenticate via Firebase Auth; the backend verifies tokens with Firebase Admin SDK and enforces role-based access. Admin operations are protected by a backend role guard. Property images upload to Firebase Storage; the download URL and metadata are written to Firestore through FastAPI.",
+      highlights: [
+        "Grid / List / Map view modes",
+        "Leaflet + OpenStreetMap map integration",
+        "Advanced filtering with query param sync",
+        "Property favorites and comparison",
+        "Firebase Auth + FastAPI token verification",
+        "Role-based access control (RBAC)",
+        "Firebase Storage image upload flow",
+        "Soft delete and listing status management",
+        "Lead / inquiry tracking",
+        "Admin dashboard analytics",
+      ],
+      architecture: "React → FastAPI → Firestore\nFirebase Auth token → Admin SDK verification → Role Guard\nAdmin: Storage upload → URL + metadata → FastAPI → Firestore",
+    },
   },
   {
-    id: 'dreamx-portfolio',
-    title: "DreamX - Portfolio Template",
-    desc: "Ultra modern, dinamik ve animasyonlu portfolyo altyapısı.",
-    image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=400&fit=crop",
-    tags: ["React", "Next.js", "Tailwind", "Framer Motion"],
-    link: "#",
-    category: "Template",
-    status: "Live",
-    details: "Freelancerlar ve ajanslar için tasarlanmış, hem estetik hem işlevsel portfolyo altyapısı. Parallax, glassmorphism, dinamik modüller.",
-    mockups: [
-      "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=600&fit=crop", // Modern portfolio
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop", // Creative layout
-      "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop"  // Designer showcase
+    id:          "paczone",
+    title:       "PacZone",
+    image:       "/paczone/cover.png",
+    imageFit:    "contain",
+    tags:        ["Flutter", "Dart", "FastAPI", "Python", "OSMnx", "PostGIS", "MapLibre", "Firebase"],
+    link:        "https://github.com/akinbs/PacZone",
+    category:    "Mobile Game",
+    status:      "Prototype",
+    mockups:     [
+      "/paczone/01-splash.png",
+      "/paczone/02-onboard1.png",
+      "/paczone/03-onboard2.png",
+      "/paczone/04-onboard3.png",
+      "/paczone/05-character.png",
+      "/paczone/06-map.png",
+      "/paczone/07-game.png",
     ],
+    mockupType:  "phone",
+    tr: {
+      desc: "Gerçek konum tabanlı, OpenStreetMap üzerinde çalışan arcade tarzı mobil oyun. Sokaklar oyun koridoruna, kavşaklar stratejik noktalara dönüşüyor.",
+      details: "PacZone, gerçek dünya coğrafyasını arcade oyun mecrasına taşıyan bir mobil oyun prototipidir. Uygulama çevresindeki yaya yolları OSMnx ile analiz edilerek oyun haritasına dönüştürülür; oyuncu kendi konumunu kontrol ederek coin toplar ve hayaletlerden kaçar.\n\nFlutter ile geliştirilen çapraz platform uygulama; özelleştirilebilir avatar sistemi, onboarding akışı, harita tabanlı oyun modu ve Chomp Mode ekranlarını içerir. Backend tarafında FastAPI + OSMnx sokak grafı analizi yapar, PostGIS mekansal sorguları işler.\n\nProje bir prototip aşamasında olup gerçek dünya konum verisini oyuna entegre eden teknik altyapının kurulmasına odaklanmaktadır.",
+      highlights: [
+        "Gerçek sokak haritası → oyun koridoru dönüşümü",
+        "OSMnx ile yaya yolu analizi",
+        "PostGIS mekansal sorgu altyapısı",
+        "Özelleştirilebilir avatar ve aksesuar sistemi",
+        "Onboarding akışı",
+        "Harita tabanlı konum takibi",
+        "Chomp Mode oyun ekranı",
+        "Flutter çapraz platform mimari",
+      ],
+    },
+    en: {
+      desc: "A real location-based arcade mobile game running on OpenStreetMap. Streets become game corridors, intersections become strategic points.",
+      details: "PacZone is a mobile game prototype that brings real-world geography into the arcade space. Nearby pedestrian paths are analyzed via OSMnx and converted into a live game map — the player controls their avatar using their real location, collecting coins and avoiding ghosts.\n\nThe Flutter app includes a customizable avatar system, onboarding flow, map-based gameplay, and a Chomp Mode screen. On the backend, FastAPI + OSMnx handles street graph analysis and PostGIS processes spatial queries.\n\nThe project is in prototype stage, focused on establishing the technical foundation for integrating real-world location data into gameplay.",
+      highlights: [
+        "Real street map → game corridor conversion",
+        "OSMnx pedestrian path analysis",
+        "PostGIS spatial query infrastructure",
+        "Customizable avatar and accessory system",
+        "Onboarding flow",
+        "Map-based live location tracking",
+        "Chomp Mode game screen",
+        "Flutter cross-platform architecture",
+      ],
+    },
   },
   {
-    id: 'real-estate-crm',
-    title: "Real Estate Management System",
-    desc: "Emlak yönetimi için kapsamlı CRM ve portal sistemi.",
-    image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&h=400&fit=crop",
-    tags: ["React", "MongoDB", "Express", "Socket.io"],
-    link: "#",
-    category: "CRM",
-    status: "Development",
-    details: "Emlak firmalarına özel CRM sistemi. Müşteri takibi, mülk yönetimi, randevu sistemi ve canlı sohbet özelliği. Gerçek zamanlı bildirimler ve detaylı raporlama.",
-    mockups: [
-      "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&h=600&fit=crop", // Real estate dashboard
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop", // Property management
-      "https://images.unsplash.com/photo-1556909114-4f7b1b0d0e6c?w=800&h=600&fit=crop"  // CRM interface
+    id:        "parkinson-detection",
+    title:     "Parkinson Detection",
+    image:     "/parkinson/cover.png",
+    imageFit:  "contain",
+    tags:      ["Python", "FastAPI", "Scikit-learn", "React", "TypeScript", "Vite", "Tailwind CSS", "pandas", "NumPy", "joblib", "Gini Index", "REST API"],
+    link:      "https://github.com/akinbs/Parkinson-Detection-with-Gini-index",
+    category:  "AI / ML",
+    status:    "Live",
+    mockups:   [
+      "https://github.com/user-attachments/assets/572e7eb4-ae9e-4d74-9682-518764c650ad",
+      "https://github.com/user-attachments/assets/4e81fe53-8c9e-4f05-8b5d-3703e60dc457",
+      "https://github.com/user-attachments/assets/25e5eb27-9fdb-48d5-865f-aa0b1acf5897",
+      "https://github.com/user-attachments/assets/c2e037fe-1978-4a7e-b3af-5e51ea48227e",
     ],
+    mockupFit: "contain",
+    tr: {
+      desc: "Parkinson hastalığı riskini ses/biyomedikal özellikler üzerinden tahmin eden, CSV/Excel yükleme destekli, FastAPI + React tabanlı uçtan uca web uygulaması.",
+      details: "Parkinson Detection with Gini Index, Parkinson hastalığı riskini ses/veri seti özellikleri üzerinden tahmin etmeye yönelik geliştirilmiş full-stack bir makine öğrenmesi projesidir. Gini Index tabanlı sınıflandırma yaklaşımı kullanılarak hasta verileri analiz edilir ve her kayıt için \"Parkinson\" veya \"Healthy\" tahmini üretilir.\n\nBu proje, yalnızca bir model denemesi olarak değil, kullanıcıların CSV veya Excel formatındaki veri setlerini yükleyip tahmin sonuçlarını arayüz üzerinden inceleyebileceği uçtan uca bir web uygulaması olarak tasarlanmıştır. Sistem dosyadaki gerekli biyomedikal/ses özelliklerini kontrol eder, modeli çalıştırır ve hasta bazlı tahmin sonuçlarını olasılık değeriyle birlikte listeler.\n\nFrontend tarafında React, TypeScript, Vite ve Tailwind CSS kullanılarak sade, modern bir tahmin paneli geliştirilmiştir. Backend tarafında Python ve FastAPI ile tahmin servisi oluşturulmuş; CSV, XLSX ve XLS formatlarını kabul eden API, feature doğrulama ve veri temizleme süreçlerini yürütür.",
+      highlights: [
+        "CSV ve Excel dosyası yükleme desteği",
+        "Parkinson risk tahmini için eğitilmiş model entegrasyonu",
+        "Hasta bazlı tahmin sonucu gösterimi",
+        "Parkinson olasılığını yüzde formatında görüntüleme",
+        "\"Parkinson\", \"Healthy\" ve \"Tümü\" filtreleriyle sonuç ayırma",
+        "Gerçek etiket varsa karşılaştırmalı analiz imkânı",
+        "FastAPI tabanlı backend mimarisi",
+        "Veri doğrulama ve eksik sütun kontrolü",
+      ],
+      architecture: "CSV / Excel upload → FastAPI endpoint\nFeature validation & preprocessing → Gini Index model\nPrediction: label + probability → React sonuç tablosu",
+    },
+    en: {
+      desc: "End-to-end ML web app for Parkinson's risk prediction from voice/biomedical features — CSV/Excel upload, FastAPI backend, React + TypeScript frontend.",
+      details: "Parkinson Detection with Gini Index is a full-stack machine learning project for predicting Parkinson's disease risk from voice and biomedical dataset features. A Gini Index-based classification model analyzes patient records and produces a \"Parkinson\" or \"Healthy\" prediction for each entry.\n\nThe project goes beyond a notebook experiment — users can upload CSV or Excel datasets, and the system validates the required biomedical/voice feature columns, runs the model, and lists patient-level predictions alongside probability scores.\n\nThe frontend is built with React, TypeScript, Vite, and Tailwind CSS, providing a clean prediction dashboard with file upload, result filtering, and a summary panel. The FastAPI backend accepts CSV, XLSX, and XLS files, handles feature validation, data cleaning, and serves the trained model via a REST endpoint.",
+      highlights: [
+        "CSV and Excel file upload support",
+        "Trained Gini Index model integration",
+        "Per-patient prediction result display",
+        "Parkinson probability shown as percentage",
+        "Filter results by Parkinson / Healthy / All",
+        "Comparative analysis when ground-truth labels are present",
+        "FastAPI-based backend architecture",
+        "Feature validation and missing column detection",
+      ],
+      architecture: "CSV / Excel upload → FastAPI endpoint\nFeature validation & preprocessing → Gini Index model\nPrediction: label + probability → React result table",
+    },
   },
   {
-    id: 'e-learning-platform',
-    title: "E-Learning Platform",
-    desc: "İnteraktif online eğitim platformu ve öğrenci yönetim sistemi.",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&fit=crop",
-    tags: ["Vue.js", "Laravel", "MySQL", "WebRTC"],
-    link: "#",
-    category: "Education",
-    status: "Live",
-    details: "Kapsamlı e-öğrenme platformu. Video konferans, canlı dersler, ödev sistemi, sınav modülü ve ilerleme takibi. Öğretmen ve öğrenci panelleri.",
-    mockups: [
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop", // Online learning
-      "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&h=600&fit=crop", // Student dashboard
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop"  // Course interface
+    id:       "darc-ui",
+    title:    "DARC UI Framework",
+    image:    "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1200&h=800&fit=crop",
+    tags:     ["React", "TypeScript", "Layout System", "Responsive"],
+    link:     "https://github.com/akinbs/DARC-UI-FrameWork",
+    category: "UI Framework",
+    status:   "Development",
+    mockups:  [
+      "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1555421689-491a97ff2040?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=600&fit=crop",
     ],
+    tr: {
+      desc:    "React için primitive-first, responsive layout framework. Görsel bileşenler değil, sayfa yapısı ve layout kompozisyonuna odaklı.",
+      details: "Primitive-first yaklaşımıyla tasarlanmış React layout framework'ü. Hazır görsel bileşenler yerine temel yapı taşlarına odaklanarak geliştiricilere güçlü sayfa yapısı, layout kompozisyonu ve responsive davranış araçları sunuyor. Herhangi bir stil sistemiyle bağımsız olarak kullanılabilir.",
+    },
+    en: {
+      desc:    "Primitive-first, responsive layout framework for React. Focused on page structure and layout composition, not visual components.",
+      details: "A React layout framework built on a primitive-first approach. Rather than ready-made visual components, it gives developers powerful tools for page structure, layout composition, and responsive behavior. Works independently of any styling system and can be integrated with any stack.",
+    },
   },
   {
-    id: 'fintech-dashboard',
-    title: "Fintech Dashboard",
-    desc: "Finansal analiz ve yatırım takibi için interaktif dashboard.",
-    image: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&h=400&fit=crop",
-    tags: ["React", "D3.js", "Node.js", "PostgreSQL"],
-    link: "#",
-    category: "Finance",
-    status: "Live",
-    details: "Finansal verilerin görselleştirilmesi ve analizi. Gerçek zamanlı borsa verileri, portföy takibi, risk analizi ve otomatik raporlama.",
-    mockups: [
-      "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&h=600&fit=crop", // Financial charts
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop", // Investment tracking
-      "https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?w=800&h=600&fit=crop"  // Analytics dashboard
+    id:          "innerhue",
+    title:       "InnerHue",
+    image:       "/innerhue/cover.png",
+    imageFit:    "cover",
+    tags:        ["Flutter", "Dart", "Mobile"],
+    link:        "https://github.com/akinbs/InnerHue",
+    category:    "Mobile App",
+    status:      "Development",
+    mockups:     [
+      "/innerhue/01-splash.png",
+      "/innerhue/02-welcome.png",
+      "/innerhue/03-name.png",
+      "/innerhue/04-birthdate.png",
+      "/innerhue/05-nationality.png",
+      "/innerhue/06-story-intro.png",
+      "/innerhue/07-story-q1.png",
+      "/innerhue/08-story-q10.png",
+      "/innerhue/09-story-q11.png",
+      "/innerhue/10-result-aura.png",
+      "/innerhue/11-result-layers.png",
+      "/innerhue/12-result-detail.png",
+      "/innerhue/13-result-calc.png",
     ],
+    mockupType:  "phone",
+    tr: {
+      desc: "İsim, burç, uyruk ve 15 sahneli hikaye seçimlerini birleştirerek sana özgü bir RGB aura spektrumu üreten deneysel Flutter mobil uygulaması.",
+      details: "InnerHue, seni klinik değil sembolik bir perspektifle tanımlayan deneysel bir Flutter mobil uygulamasıdır. İsmin, doğum tarihin, uyruğun ve 15 sahneli bir anlatı yolculuğundaki seçimlerin; RGB renk uzayında birleşerek sana özgü bir spektrum üretir.\n\nHer girdi bağımsız bir 'katman' olarak işlenir. İsim katmanı harf skorları, sesli/sessiz oranı ve Türkçe karakter tespiti ile RGB delta üretir. Burç katmanı element, modalite, polarite ve kavşak gün tespitine göre yön ekler. Uyruk katmanı seçilen ülkenin bayrak renklerinden sembolik bir imza çıkarır. Hikaye katmanı ise 15 sahnelik anlatı içindeki seçimleri beş eksende — aktivasyon, zemin, yansıma, açıklık, eşik — analiz ederek en belirleyici delta'yı hesaplar.\n\nTüm katman delta'ları merkezi bir algoritmayla birleştirilir ve final spektrum üretilir. Sonuç; spektrum adı, baskın kanal ve yoğunluk etiketleri, trait tag'leri ve paylaşılabilir bir renk kartı ile sunulur. Teknik şeffaflık modu her katmanın hesaplama detaylarını kullanıcıya açar.",
+      highlights: [
+        "İsim katmanı: harf skoru, sesli/sessiz oranı, uzunluk analizi",
+        "Burç katmanı: element, modalite, polarite ve kavşak gün tespiti",
+        "Uyruk katmanı: bayrak rengi sembolik imzası",
+        "15 sahneli hikaye katmanı (5 eksen analizi)",
+        "Tüm katmanların RGB delta birleşimi ile final spektrum",
+        "Aura ismi ve personality trait tag üretimi",
+        "Paylaşılabilir spektrum kartı",
+        "Teknik şeffaflık modu (katman bazlı hesaplama detayı)",
+      ],
+    },
+    en: {
+      desc: "An experimental Flutter mobile app that merges name, zodiac, nationality, and 15-scene story choices into a unique RGB aura spectrum.",
+      details: "InnerHue is an experimental Flutter mobile app that defines you through a symbolic, not clinical, lens. Your name, birth date, nationality, and choices across a 15-scene narrative journey combine in the RGB color space to produce a spectrum that is uniquely yours.\n\nEach input is processed as an independent layer. The name layer generates RGB deltas from letter scores, vowel/consonant ratio, and Turkish character detection. The zodiac layer adds directional weight based on element, modality, polarity, and cusp-day detection. The nationality layer extracts a symbolic color signature from the flag colors of the selected country. The story layer analyzes 15 narrative scene choices across five axes — activation, grounding, reflection, openness, and threshold — and calculates the dominant delta.\n\nAll layer deltas are merged through a central algorithm to produce the final spectrum. The result is presented with a spectrum name, dominant channel and intensity tags, personality trait tags, and a shareable color card. A technical transparency mode exposes the per-layer calculation detail to the user.",
+      highlights: [
+        "Name layer: letter scores, vowel/consonant ratio, length analysis",
+        "Zodiac layer: element, modality, polarity, cusp-day detection",
+        "Nationality layer: symbolic flag color signature",
+        "15-scene story layer with 5-axis analysis",
+        "Final spectrum from combined RGB deltas of all layers",
+        "Aura name and personality trait generation",
+        "Shareable spectrum card",
+        "Technical transparency mode (per-layer calculation detail)",
+      ],
+    },
   },
   {
-    id: 'social-media-analytics',
-    title: "Social Media Analytics Tool",
-    desc: "Sosyal medya performans analizi ve içerik planlama aracı.",
-    image: "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&h=400&fit=crop",
-    tags: ["React", "Python", "FastAPI", "Redis"],
-    link: "#",
-    category: "Analytics",
-    status: "Beta",
-    details: "Çoklu sosyal medya hesaplarının analizi. Engagement takibi, içerik planlaması, hashtag analizi ve rekabet analizi.",
-    mockups: [
-      "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&h=600&fit=crop", // Social media dashboard
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=600&fit=crop", // Analytics interface
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop"  // Engagement metrics
+    id:        "travella",
+    title:     "Travella",
+    image:     "/travella/cover.jpg",
+    imageFit:  "contain",
+    tags:      ["Flutter", "Dart", "Firebase Authentication", "Cloud Firestore", "Firebase Storage", "Google Maps Flutter", "Geolocator", "Provider", "Flutter Rating Bar", "URL Launcher"],
+    link:      "https://github.com/akinbs/travella",
+    category:  "Mobile App",
+    status:    "Development",
+    mockups:   [
+      "/travella/01-screenshot.png",
+      "/travella/02-screenshot.png",
+      "/travella/03-screenshot.png",
+      "/travella/04-screenshot.png",
     ],
-  },
-  {
-    id: 'iot-monitor',
-    title: "IoT Device Monitor",
-    desc: "IoT cihaz yönetimi ve izleme sistemi.",
-    image: "https://images.unsplash.com/photo-1572435555646-7ad9a149ad91?w=800&h=400&fit=crop",
-    tags: ["React", "MQTT", "InfluxDB", "Docker"],
-    link: "#",
-    category: "IoT",
-    status: "Development",
-    details: "IoT cihazlarının merkezi yönetimi. Gerçek zamanlı veri toplama, alarm sistemi, uzaktan kontrol ve grafik raporlama.",
-    mockups: [
-      "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop", // IoT dashboard
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // Device monitoring
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop"  // Data visualization
-    ],
-  },
-  {
-    id: 'blog-cms',
-    title: "Modern Blog CMS",
-    desc: "Headless CMS ile güçlendirilmiş modern blog platformu.",
-    image: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&h=400&fit=crop",
-    tags: ["Next.js", "Strapi", "GraphQL", "Vercel"],
-    link: "#",
-    category: "CMS",
-    status: "Live",
-    details: "Modern blog yazarları için optimize edilmiş CMS. SEO optimizasyonu, çoklu dil desteği, sosyal medya entegrasyonu ve performans odaklı tasarım.",
-    mockups: [
-      "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&h=600&fit=crop", // Blog editor
-      "https://images.unsplash.com/photo-1486312338219-ce68e2c6b7e6?w=800&h=600&fit=crop", // Content management
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop"  // Publishing interface
-    ],
+    mockupType: "phone",
+    tr: {
+      desc:    "Yapay zeka destekli kişiselleştirilmiş tatil rotaları oluşturan, Google Maps entegrasyonlu mobil turizm rehberi uygulaması.",
+      details: "Travella, kullanıcıların tatil ve gezi planlama sürecini daha kolay, kişisel ve keşif odaklı hale getirmek için geliştirilmiş yapay zeka destekli bir mobil turizm rehberi uygulamasıdır. Uygulama; kullanıcının ilgi alanlarına, gezmek istediği turizm türlerine ve konum bilgisine göre kişiselleştirilmiş tatil rotaları oluşturmayı hedefler.\n\nProje; doğa turizmi, tarihî alanlar, yaylalar, plajlar ve inanç turizmi gibi farklı gezi kategorilerini tek bir mobil deneyimde birleştirir. Kullanıcılar turistik yerleri keşfedebilir, detaylı bilgi sayfalarını inceleyebilir, fotoğraf galerilerine göz atabilir, yorum ve puanlama yapabilir, favori noktalarını belirleyebilir ve seçilen lokasyonları harita üzerinde görüntüleyebilir.\n\nFlutter ile geliştirilmiş uygulama; Firebase Authentication, Firestore/Storage altyapısı, Google Maps entegrasyonu, kullanıcı yorumları, puanlama sistemi ve rota kategorileri gibi modern mobil özellikler içermektedir.",
+      highlights: [
+        "Yapay zeka destekli kişiselleştirilmiş tatil rotası oluşturma",
+        "Google Maps entegrasyonu ile konum ve yol tarifi desteği",
+        "Mekan detay sayfaları, açıklamalar ve fotoğraf galerileri",
+        "Kullanıcı puanlama ve yorum sistemi",
+        "Favori noktalar ve 'Buraya Gittim' etkileşimi",
+        "Doğa, tarih, yayla, deniz ve inanç turizmi kategorileri",
+        "Firebase Authentication ile kullanıcı oturum yönetimi",
+        "Kullanıcı konumunu harita üzerinde görüntüleme",
+      ],
+    },
+    en: {
+      desc:    "AI-powered mobile tourism guide app that generates personalized travel routes with Google Maps integration.",
+      details: "Travella is an AI-powered mobile tourism guide designed to make holiday and travel planning easier, more personal, and discovery-focused. The app generates personalized travel routes based on the user's interests, preferred tourism types, and location data.\n\nThe project brings together different travel categories — nature tourism, historical sites, mountain plateaus, beaches, and religious tourism — into a single mobile experience. Users can discover tourist spots, browse detailed info pages, explore photo galleries, rate and review places, save favorites, and view selected locations on the map.\n\nBuilt with Flutter, the app includes Firebase Authentication, Firestore/Storage infrastructure, Google Maps integration, location services, user reviews, a rating system, and route categories.",
+      highlights: [
+        "AI-powered personalized travel route generation",
+        "Google Maps integration with directions support",
+        "Venue detail pages, descriptions, and photo galleries",
+        "User rating and review system",
+        "Favorites and 'Been Here' interaction",
+        "Nature, history, plateau, beach & religious tourism categories",
+        "Firebase Authentication for user session management",
+        "Live user location display on map",
+      ],
+    },
   },
 ];
 
+const statusStyle: Record<string, string> = {
+  Live:        "text-emerald-400 border-emerald-400/30",
+  Development: "text-amber-400  border-amber-400/30",
+  Prototype:   "text-purple-400 border-purple-400/30",
+  Beta:        "text-blue-400   border-blue-400/30",
+};
+
+const categories = ["All", "E-Commerce", "Full-Stack", "Mobile Game", "AI / ML", "UI Framework", "Mobile App"];
+
 export default function Projects() {
-  const [modal, setModal] = useState<number | null>(null);
-  const [filter, setFilter] = useState<string>("All");
-  const [currentMockup, setCurrentMockup] = useState<number>(0);
+  const { lang, t } = useLang();
+  const [modal,  setModal]  = useState<number | null>(null);
+  const [filter, setFilter] = useState("All");
+  const [mockup, setMockup] = useState(0);
 
-  const categories = ["All", "E-Commerce", "AI/ML", "Template", "CRM", "Education", "Finance", "Analytics", "IoT", "CMS"];
-  const filteredProjects = filter === "All" ? projects : projects.filter(p => p.category === filter);
+  const filtered = filter === "All"
+    ? projects
+    : projects.filter(p => p.category === filter);
 
-  // Reset mockup index when modal opens
+  useEffect(() => { if (modal !== null) setMockup(0); }, [modal]);
   useEffect(() => {
-    if (modal !== null) {
-      setCurrentMockup(0);
-    }
+    document.body.style.overflow = modal !== null ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [modal]);
 
-  return (
-    <motion.section
-      id="projects"
-      className="max-w-7xl mx-auto my-20 px-4"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.7 }}
-    >
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white/90">Proje Kataloğu</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">Front-end mühendisliği projelerimde modern teknolojiler kullanarak etkileyici deneyimler yaratıyorum</p>
-        
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-4 py-2 rounded-full transition-all ${
-                filter === cat
-                  ? 'bg-[#71f9e4] text-gray-900 shadow-lg'
-                  : 'bg-white/20 dark:bg-black/20 text-gray-700 dark:text-gray-300 hover:bg-[#71f9e4]/30'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setModal(null);
+      if (e.key === "ArrowRight" && modal !== null) setModal(m => m! < projects.length - 1 ? m! + 1 : 0);
+      if (e.key === "ArrowLeft"  && modal !== null) setModal(m => m! > 0 ? m! - 1 : projects.length - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modal]);
+  const STACK_BASE_TOP = 88;
+  const STACK_OFFSET = 16;
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredProjects.map((pr, i) => (
+  const getStackTop = (index: number) => STACK_BASE_TOP + index * STACK_OFFSET;
+
+  const stackBottomSpace =
+    filtered.length > 0
+      ? "clamp(140px, 28vh, 320px)"
+      : "0px";
+
+  const currentProject = modal !== null ? projects[modal] : null;
+
+  return (
+    <section id="projects" className="bg-black">
+
+      <div className="py-28 px-6">
+        <div className="max-w-[1078px] mx-auto">
           <motion.div
-            key={i}
-            className="group relative rounded-2xl bg-white/60 dark:bg-black/60 backdrop-blur-xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer"
-            whileHover={{ scale: 1.02, y: -5 }}
-            onClick={() => setModal(i)}
-            layout
+            className="flex items-baseline gap-5 mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            <div className="relative overflow-hidden">
-              <img src={pr.image} alt={pr.title} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300" />
-              <div className="absolute top-4 right-4 flex gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-orange-500 text-white">
-                  Concept Design
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#71f9e4]/80 text-gray-900">
-                  {pr.category}
-                </span>
-              </div>
-            </div>
-            
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white/90 group-hover:text-[#71f9e4] transition-colors">
-                {pr.title}
-              </h3>
-              <p className="mb-4 text-gray-700 dark:text-gray-300 text-sm line-clamp-2">{pr.desc}</p>
-              
-              <div className="flex gap-2 flex-wrap mb-4">
-                {pr.tags.slice(0, 3).map(t => (
-                  <span key={t} className="px-2 py-1 bg-[#71f9e4]/20 dark:bg-[#4ce3c9]/20 rounded text-xs text-gray-800 dark:text-gray-200">
-                    {t}
-                  </span>
-                ))}
-                {pr.tags.length > 3 && (
-                  <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-xs text-gray-600 dark:text-gray-400">
-                    +{pr.tags.length - 3}
-                  </span>
-                )}
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <button className="text-[#71f9e4] hover:text-[#4ce3c9] font-medium text-sm">
-                  Detayları Görüntüle →
-                </button>
-                <svg className="w-5 h-5 text-gray-400 group-hover:text-[#71f9e4] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </div>
+            <span className="section-number">02</span>
+            <div>
+              <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight mb-2">{t.projects.heading}</h2>
+              <p className="text-white/38 font-light text-sm">{t.projects.subheading}</p>
             </div>
           </motion.div>
-        ))}
+
+          <motion.div
+            className="flex flex-wrap gap-2"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+          >
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-5 py-2 rounded-pill text-sm font-light transition-all duration-200 border ${
+                  filter === cat
+                    ? "border-white/55 text-white bg-white/8"
+                    : "border-white/10 text-white/45 hover:border-white/25 hover:text-white/70"
+                }`}
+              >
+                {cat === "All" ? t.projects.allLabel : cat}
+              </button>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
-      {filteredProjects.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400">Bu kategoride henüz proje bulunmuyor.</p>
-        </div>
-      )}
-      <AnimatePresence>
-        {modal !== null && (
-          <motion.div 
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setModal(null)}
-          >
-            <motion.div 
-              className="bg-white dark:bg-[#10142a] rounded-3xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-auto"
-              initial={{ scale: 0.8, y: 40 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, y: 40 }}
-              onClick={(e) => e.stopPropagation()}
+      <div className="px-6">
+        <div
+          className="max-w-[1078px] mx-auto relative"
+          style={{ paddingBottom: stackBottomSpace }}
+        >
+
+          {filtered.length === 0 && (
+            <p className="text-center py-20 text-white/28 font-light text-sm">
+              {t.projects.empty}
+            </p>
+          )}
+
+          {filtered.map((pr, i) => (
+            <div
+              key={pr.id}
+              className="sticky mb-6"
+              style={{
+                top: `${getStackTop(i)}px`,
+                zIndex: 10 + i,
+              }}
             >
-              
-              <div className="relative">
-                <img src={projects[modal].image} alt={projects[modal].title} className="w-full h-64 object-cover rounded-t-3xl" />
-                <button 
-                  className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                  onClick={() => setModal(null)}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-                <div className="absolute bottom-4 left-4 flex gap-2">
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-orange-500 text-white">
-                    Concept Design
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-[#71f9e4]/90 text-gray-900">
-                    {projects[modal].category}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-8">
-                <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white/90">{projects[modal].title}</h2>
-                <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">{projects[modal].details}</p>
-                
-                {/* Web Site Mockups Section */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white/90">Website Görünümleri</h3>
-                  
-                  {/* Main Mockup Display */}
-                  <div className="relative mb-4 bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden">
-                    <motion.img 
-                      key={currentMockup}
-                      src={projects[modal].mockups[currentMockup]} 
-                      alt={`${projects[modal].title} mockup ${currentMockup + 1}`}
-                      className="w-full h-96 object-cover"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
+            <article
+              className="h-[620px] md:h-[480px] overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0c0c0c] cursor-pointer hover:border-white/[0.14] transition-colors duration-200"
+              onClick={() => setModal(projects.indexOf(pr))}
+            >
+                <div className="grid grid-cols-1 md:grid-cols-2 h-full">
+
+                  <div className="relative h-56 md:h-full overflow-hidden">
+                    <img
+                      src={pr.image}
+                      alt={pr.title}
+                      loading="lazy"
+                      className={pr.imageFit === "contain"
+                        ? "absolute top-0 left-1/2 -translate-x-1/2 h-full w-auto min-w-full transition-transform duration-700 hover:scale-[1.03]"
+                        : "w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
+                      }
+                      style={{ filter: "grayscale(15%)" }}
                     />
-                    
-                    {/* Navigation arrows */}
-                    {projects[modal].mockups.length > 1 && (
-                      <>
-                        <button
-                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                          onClick={() => setCurrentMockup(currentMockup === 0 ? projects[modal].mockups.length - 1 : currentMockup - 1)}
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <button
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                          onClick={() => setCurrentMockup(currentMockup === projects[modal].mockups.length - 1 ? 0 : currentMockup + 1)}
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </>
-                    )}
-                    
-                    {/* Dots indicator */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                      {projects[modal].mockups.map((_, index) => (
-                        <button
-                          key={index}
-                          className={`w-3 h-3 rounded-full transition-colors ${
-                            index === currentMockup ? 'bg-[#71f9e4]' : 'bg-white/50'
-                          }`}
-                          onClick={() => setCurrentMockup(index)}
-                        />
-                      ))}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#0c0c0c]/50" />
+
+                    <div className="absolute left-5 top-5 w-9 h-9 rounded-full border border-white/15 bg-black/40 backdrop-blur-sm flex items-center justify-center text-[11px] font-light text-white/60 tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
                     </div>
                   </div>
-                  
-                  {/* Thumbnail navigation */}
-                  <div className="flex gap-3 overflow-x-auto pb-2">
-                    {projects[modal].mockups.map((mockup, index) => (
-                      <motion.button
-                        key={index}
-                        className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          index === currentMockup 
-                            ? 'border-[#71f9e4] shadow-lg' 
-                            : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'
-                        }`}
-                        onClick={() => setCurrentMockup(index)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+
+                  <div className="flex flex-col justify-between p-8 md:p-10 lg:p-12">
+                    <div>
+                      <div className="flex items-center gap-2.5 mb-6">
+                        <span className="px-3 py-1 rounded-pill border border-white/12 text-[11px] font-light text-white/45">
+                          {pr.category}
+                        </span>
+                        <span className={`px-3 py-1 rounded-pill border text-[11px] font-light ${statusStyle[pr.status] ?? "text-white/40 border-white/15"}`}>
+                          {pr.status}
+                        </span>
+                      </div>
+
+                      <h3 className="text-2xl md:text-3xl font-light text-white tracking-tight mb-4 leading-tight">
+                        {pr.title}
+                      </h3>
+
+                      <p
+                        className="text-white/40 font-light leading-relaxed text-sm md:text-base overflow-hidden"
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: "vertical",
+                        }}
                       >
-                        <img 
-                          src={mockup} 
-                          alt={`Thumbnail ${index + 1}`}
-                          className="w-full h-full object-cover"
+                        {pr[lang].desc}
+                      </p>
+                    </div>
+
+                    <div className="mt-8">
+                      <div className="flex flex-wrap gap-2 mb-7">
+                        {pr.tags.map(tag => (
+                          <span key={tag} className="px-3 py-1 rounded-pill border border-white/10 text-[11px] text-white/38 font-light">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <button
+                        className="btn-ghost text-sm py-2.5 px-6"
+                        onClick={e => { e.stopPropagation(); setModal(projects.indexOf(pr)); }}
+                      >
+                        {t.projects.viewDetails}
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </article>
+            </div>
+          ))}
+          
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {modal !== null && currentProject && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex flex-col"
+            style={{ backgroundColor: "rgba(4,4,4,0.97)", backdropFilter: "blur(32px)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+          >
+            <motion.div
+              className="flex flex-col w-full h-full"
+              initial={{ y: 48, opacity: 0 }}
+              animate={{ y: 0,  opacity: 1 }}
+              exit={{    y: 48, opacity: 0 }}
+              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+            >
+
+              <div className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-white/[0.05] flex-shrink-0">
+
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] text-white/20 font-light tabular-nums tracking-[0.2em]">
+                    {String(modal + 1).padStart(2, "0")}&nbsp;/&nbsp;{String(projects.length).padStart(2, "0")}
+                  </span>
+                  <div className="w-px h-3 bg-white/12" />
+                  <span className="text-[11px] font-light text-white/35 tracking-wide">{currentProject.category}</span>
+                </div>
+
+                <span className="hidden md:block text-sm font-light text-white/55 tracking-tight">
+                  {currentProject.title}
+                </span>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setModal(modal > 0 ? modal - 1 : projects.length - 1)}
+                    className="w-8 h-8 rounded-full border border-white/10 text-white/40 flex items-center justify-center hover:text-white hover:border-white/28 transition-all"
+                    aria-label="Önceki"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  </button>
+                  <button
+                    onClick={() => setModal(modal < projects.length - 1 ? modal + 1 : 0)}
+                    className="w-8 h-8 rounded-full border border-white/10 text-white/40 flex items-center justify-center hover:text-white hover:border-white/28 transition-all"
+                    aria-label="Sonraki"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                  <div className="w-px h-4 bg-white/10 mx-1" />
+                  <button
+                    onClick={() => setModal(null)}
+                    className="w-8 h-8 rounded-full border border-white/10 text-white/40 flex items-center justify-center hover:text-white hover:border-white/28 transition-all"
+                    aria-label="Kapat"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+
+                <div className={`relative md:w-[54%] flex-shrink-0 h-[38vh] md:h-auto overflow-hidden ${
+                  currentProject.mockupType === "phone"
+                    ? "bg-[#07071a]"
+                    : currentProject.mockupFit === "contain" ? "bg-[#f0f0f0]" : "bg-[#030303]"
+                }`}>
+
+                  {currentProject.mockupType === "phone" ? (
+                    /* ── Phone gallery ── */
+                    <div className="absolute inset-0 pb-14 flex items-center justify-center overflow-hidden">
+                      {/* Main phone — tek, merkeze hizalı */}
+                      <AnimatePresence mode="wait">
+                        <motion.img
+                          key={`phone-${modal}-${mockup}`}
+                          src={currentProject.mockups[mockup]}
+                          className="h-full w-auto object-contain flex-shrink-0 z-10 rounded-[2rem]"
+                          style={{ filter: "drop-shadow(0 12px 48px rgba(100,40,220,0.5))" }}
+                          initial={{ opacity: 0, scale: 0.93 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{    opacity: 0, scale: 0.93 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
                         />
-                      </motion.button>
-                    ))}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    /* ── Desktop image ── */
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={`${modal}-${mockup}`}
+                        src={currentProject.mockups[mockup]}
+                        alt={currentProject.title}
+                        className={`absolute inset-0 w-full h-full ${currentProject.mockupFit === "contain" ? "object-contain" : "object-cover"}`}
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{ opacity: 1, scale: 1   }}
+                        exit={{    opacity: 0, scale: 0.97 }}
+                        transition={{ duration: 0.38, ease: "easeOut" }}
+                      />
+                    </AnimatePresence>
+                  )}
+
+                  {/* Gradients — desktop only */}
+                  {currentProject.mockupType !== "phone" && (
+                    <>
+                      <div className="absolute inset-0 pointer-events-none"
+                        style={{ background: "linear-gradient(to right, transparent 70%, rgba(4,4,4,0.5))" }} />
+                      <div className="absolute inset-0 pointer-events-none"
+                        style={{ background: "linear-gradient(to top, rgba(4,4,4,0.7) 0%, transparent 40%)" }} />
+                    </>
+                  )}
+
+                  {/* Nav arrows */}
+                  {currentProject.mockups.length > 1 && (
+                    <>
+                      <button
+                        onClick={() => setMockup(m => m === 0 ? currentProject.mockups.length - 1 : m - 1)}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-all"
+                        style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)" }}
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                      </button>
+                      <button
+                        onClick={() => setMockup(m => m === currentProject.mockups.length - 1 ? 0 : m + 1)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-all"
+                        style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.1)" }}
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </button>
+                    </>
+                  )}
+
+                  {/* Thumbnail strip */}
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-4">
+                    {currentProject.mockups.map((src, idx) => {
+                      const isPhone = currentProject.mockupType === "phone";
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setMockup(idx)}
+                          className="flex-shrink-0 rounded-md overflow-hidden transition-all duration-250"
+                          style={{
+                            width:  isPhone ? 22 : 52,
+                            height: isPhone ? 38 : 36,
+                            border: `1.5px solid ${idx === mockup ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.08)"}`,
+                            opacity: idx === mockup ? 1 : 0.32,
+                            transform: idx === mockup ? "scale(1)" : "scale(0.93)",
+                          }}
+                        >
+                          <img src={src} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
-                
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white/90">Kullanılan Teknolojiler</h3>
-                  <div className="flex gap-2 flex-wrap">
-                    {projects[modal].tags.map((tag) => (
-                      <span key={tag} className="px-3 py-2 bg-[#71f9e4]/30 dark:bg-[#4ce3c9]/20 rounded-lg text-gray-800 dark:text-gray-200 font-medium">
-                        {tag}
-                      </span>
-                    ))}
+
+                <div
+                  className="flex-1 overflow-y-auto flex flex-col"
+                  style={{ scrollbarWidth: "none" }}
+                >
+                  <div className="flex-1 flex flex-col px-8 md:px-12 pt-10 pb-0">
+
+                    <span
+                      className="font-light text-white select-none tabular-nums leading-[0.85] mb-0 pointer-events-none"
+                      style={{ fontSize: "clamp(72px, 9vw, 110px)", opacity: 0.032 }}
+                    >
+                      {String(modal + 1).padStart(2, "0")}
+                    </span>
+
+                    <div className="-mt-4 mb-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className={`px-2.5 py-0.5 rounded-pill border text-[10px] font-light ${statusStyle[currentProject.status] ?? "text-white/40 border-white/15"}`}>
+                          {currentProject.status}
+                        </span>
+                      </div>
+                      <h2 className="text-3xl md:text-4xl lg:text-[2.6rem] font-light text-white tracking-tight leading-[1.05]">
+                        {currentProject.title}
+                      </h2>
+                    </div>
+
+                    <p className="text-base text-white/55 font-light leading-relaxed mb-8">
+                      {currentProject[lang].desc}
+                    </p>
+
+                    <div className="h-px bg-white/[0.05] mb-8" />
+
+                    <div className="mb-8">
+                      <p className="text-[10px] text-white/20 font-light tracking-[0.32em] uppercase mb-4">
+                        {lang === "tr" ? "Proje Detayı" : "Project Detail"}
+                      </p>
+                      <div className="flex flex-col gap-4">
+                        {currentProject[lang].details.split("\n\n").map((para, i) => (
+                          <p key={i} className="text-sm text-white/38 font-light leading-[1.9]">{para}</p>
+                        ))}
+                      </div>
+                    </div>
+
+                    {currentProject[lang].highlights && (
+                      <div className="mb-8">
+                        <p className="text-[10px] text-white/20 font-light tracking-[0.32em] uppercase mb-4">
+                          {lang === "tr" ? "Öne Çıkan Özellikler" : "Key Features"}
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                          {currentProject[lang].highlights!.map((item, idx) => (
+                            <div key={idx} className="flex items-start gap-2.5">
+                              <span className="mt-[5px] w-1 h-1 rounded-full bg-white/25 flex-shrink-0" />
+                              <span className="text-[12px] text-white/42 font-light leading-snug">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {currentProject[lang].architecture && (
+                      <div className="mb-8">
+                        <p className="text-[10px] text-white/20 font-light tracking-[0.32em] uppercase mb-4">
+                          {lang === "tr" ? "Mimari Akış" : "Architecture"}
+                        </p>
+                        <div className="px-4 py-3.5 rounded-xl border border-white/[0.07] bg-white/[0.025]">
+                          <pre className="text-[11px] text-white/32 font-mono leading-relaxed whitespace-pre-wrap tracking-wide">
+                            {currentProject[lang].architecture}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="mb-10">
+                      <p className="text-[10px] text-white/20 font-light tracking-[0.32em] uppercase mb-4">
+                        {t.projects.techLabel}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {currentProject.tags.map(tag => (
+                          <span key={tag} className="px-3 py-1.5 rounded-pill border border-white/[0.09] text-[11px] text-white/42 font-light hover:border-white/20 hover:text-white/65 transition-colors">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex-1" />
+                  </div>
+
+                  <div className="px-8 md:px-12 pb-10 flex-shrink-0">
+                    <div className="h-px bg-white/[0.05] mb-6" />
+                    <div className="flex gap-3">
+                      {currentProject.demoLink && (
+                        <a href={currentProject.demoLink} target="_blank" rel="noopener noreferrer"
+                          className="flex-1 btn-solid py-3.5 text-sm text-center">
+                          {t.projects.liveDemo}
+                        </a>
+                      )}
+                      <a href={currentProject.link} target="_blank" rel="noopener noreferrer"
+                        className="flex-1 btn-ghost py-3.5 text-sm justify-center">
+                        {t.projects.github}
+                        <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </a>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex gap-4">
-                  <button className="flex-1 bg-[#71f9e4] hover:bg-[#4ce3c9] text-gray-900 font-medium py-3 px-6 rounded-lg transition-colors">
-                    Canlı Demo
-                  </button>
-                  <button className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium py-3 px-6 rounded-lg transition-colors">
-                    Kaynak Kod
-                  </button>
-                </div>
+
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.section>
+    </section>
   );
 }

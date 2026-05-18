@@ -1,11 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <circle cx="50" cy="50" r="45" fill="url(#grad1)"/>
-  <text x="50" y="35" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">D</text>
-  <text x="50" y="65" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">X</text>
+  <style>
+    @keyframes neon {
+      0%   { opacity: .68; filter: drop-shadow(0 0 2px #ff2b68) drop-shadow(0 0 5px #ff2b68); }
+      50%  { opacity: 1;   filter: drop-shadow(0 0 4px #ff2b68) drop-shadow(0 0 13px #ff2b68) drop-shadow(0 0 24px #be0f3c); }
+      52%  { opacity: .8;  filter: drop-shadow(0 0 2px #ff2b68) drop-shadow(0 0 7px #ff2b68); }
+      54%  { opacity: 1;   filter: drop-shadow(0 0 4px #ff2b68) drop-shadow(0 0 13px #ff2b68) drop-shadow(0 0 24px #be0f3c); }
+      100% { opacity: .68; filter: drop-shadow(0 0 2px #ff2b68) drop-shadow(0 0 5px #ff2b68); }
+    }
+    .a { animation: neon 3s ease-in-out infinite; }
+  </style>
+  <g class="a" fill="none" stroke="#ff2b68" stroke-width="5" stroke-linecap="round">
+    <line x1="50" y1="8"  x2="11" y2="91"/>
+    <line x1="50" y1="8"  x2="89" y2="91"/>
+    <line x1="29" y1="55" x2="71" y2="55"/>
+  </g>
 </svg>

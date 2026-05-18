@@ -2,6 +2,126 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --midnight-canvas:  #000000;
+  --frost-white:      #ffffff;
+  --deep-shadow:      #181818;
+  --whisper-gray:     #6d6d6d;
+  --misty-gray:       #636363;
+  --ocean-gradient:   linear-gradient(90deg, rgb(160, 224, 171), rgb(255, 172, 46) 50%, rgb(165, 45, 37));
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #000000; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+/* Selection */
+::selection { background: rgba(160, 224, 171, 0.25); color: #ffffff; }
+
+@layer utilities {
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    border-radius: 75.024px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 300;
+    transition: all 0.25s ease;
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  .btn-ghost:active { transform: scale(0.98); }
+
+  .btn-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    border-radius: 75.024px;
+    background: #ffffff;
+    color: #000000;
+    font-size: 0.875rem;
+    font-weight: 400;
+    transition: all 0.25s ease;
+  }
+  .btn-solid:hover { background: rgba(255, 255, 255, 0.88); }
+  .btn-solid:active { transform: scale(0.98); }
+
+  .card-dark {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    transition: all 0.25s ease;
+  }
+  .card-dark:hover {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .section-number {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--whisper-gray);
+    letter-spacing: 0.2em;
+    flex-shrink: 0;
+  }
+
+  .input-mono {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 0.875rem 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.25s ease;
+    resize: none;
+  }
+  .input-mono::placeholder { color: rgba(255, 255, 255, 0.22); }
+  .input-mono:focus { border-bottom-color: rgba(255, 255, 255, 0.5); }
+
+  .text-ocean {
+    background: linear-gradient(90deg, rgb(160, 224, 171), rgb(255, 172, 46) 50%, rgb(165, 45, 37));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Glass sphere (kept for potential future use) */
+.glass-sphere {
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+/* SVG path drawing */
+@keyframes drawPath {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
 }

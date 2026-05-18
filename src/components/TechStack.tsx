@@ -1,65 +1,119 @@
-// src/components/TechStack.tsx
-import { FaReact, FaNodeJs, FaPython, FaCss3Alt, FaJs, FaHtml5, FaGitAlt,  FaDocker, FaAws } from "react-icons/fa";
-import { SiTypescript, SiTailwindcss, SiFramer, SiNextdotjs, SiMongodb, SiPostgresql, SiRedis, SiExpress, SiGraphql, SiFirebase, SiVercel, SiNetlify } from "react-icons/si";
+import {
+  FaReact, FaNodeJs, FaPython, FaJs,
+  FaGitAlt, FaDocker, FaAws,
+} from "react-icons/fa";
+import {
+  SiTypescript, SiTailwindcss, SiFramer, SiNextdotjs,
+  SiPostgresql, SiRedis, SiFirebase, SiVercel,
+  SiFlutter, SiVite, SiFastapi, SiDjango,
+  SiMysql, SiSqlite, SiLinux,
+} from "react-icons/si";
 import { motion } from "framer-motion";
+import { useLang } from "../context/LangContext";
 
-const stack = [
-  // Frontend
-  { name: "React", icon: <FaReact size={36} className="text-[#71f9e4]" /> },
-  { name: "Next.js", icon: <SiNextdotjs size={36} className="text-white" /> },
-  { name: "TypeScript", icon: <SiTypescript size={36} className="text-blue-400" /> },
-  { name: "JavaScript", icon: <FaJs size={36} className="text-yellow-200" /> },
-  { name: "HTML5", icon: <FaHtml5 size={36} className="text-orange-400" /> },
-  { name: "CSS3", icon: <FaCss3Alt size={36} className="text-blue-300" /> },
-  { name: "TailwindCSS", icon: <SiTailwindcss size={36} className="text-teal-300" /> },
-  { name: "Framer Motion", icon: <SiFramer size={36} className="text-pink-300" /> },
-  
-  // Backend
-  { name: "Node.js", icon: <FaNodeJs size={36} className="text-green-400" /> },
-  { name: "Express.js", icon: <SiExpress size={36} className="text-gray-400" /> },
-  { name: "Python", icon: <FaPython size={36} className="text-yellow-400" /> },
-  { name: "GraphQL", icon: <SiGraphql size={36} className="text-pink-400" /> },
-  
-  // Database
-  { name: "MongoDB", icon: <SiMongodb size={36} className="text-green-500" /> },
-  { name: "PostgreSQL", icon: <SiPostgresql size={36} className="text-blue-500" /> },
-  { name: "Redis", icon: <SiRedis size={36} className="text-red-500" /> },
-  
-  // DevOps & Cloud
-  { name: "Docker", icon: <FaDocker size={36} className="text-blue-400" /> },
-  { name: "AWS", icon: <FaAws size={36} className="text-orange-500" /> },
-  { name: "Firebase", icon: <SiFirebase size={36} className="text-yellow-500" /> },
-  { name: "Vercel", icon: <SiVercel size={36} className="text-white" /> },
-  { name: "Netlify", icon: <SiNetlify size={36} className="text-teal-400" /> },
-  
-  // Tools
-  { name: "Git", icon: <FaGitAlt size={36} className="text-red-400" /> },
+interface StackItem {
+  name: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+const stack: StackItem[] = [
+  // ── Frontend (8) ──────────────────────────────────────────
+  { name: "React",         icon: <FaReact />,       color: "#61DAFB" },
+  { name: "TypeScript",    icon: <SiTypescript />,  color: "#3178C6" },
+  { name: "JavaScript",    icon: <FaJs />,          color: "#F7DF1E" },
+  { name: "Next.js",       icon: <SiNextdotjs />,   color: "#ffffff" },
+  { name: "Tailwind CSS",  icon: <SiTailwindcss />, color: "#06B6D4" },
+  { name: "Framer Motion", icon: <SiFramer />,      color: "#E95D94" },
+  { name: "Flutter",       icon: <SiFlutter />,     color: "#54C5F8" },
+  { name: "Vite",          icon: <SiVite />,        color: "#646CFF" },
+  // ── Backend (4) ───────────────────────────────────────────
+  { name: "FastAPI",       icon: <SiFastapi />,     color: "#009688" },
+  { name: "Python",        icon: <FaPython />,      color: "#3776AB" },
+  { name: "Node.js",       icon: <FaNodeJs />,      color: "#339933" },
+  { name: "Django",        icon: <SiDjango />,      color: "#44B78B" },
+  // ── Database (5) ──────────────────────────────────────────
+  { name: "Firebase",      icon: <SiFirebase />,    color: "#FFCA28" },
+  { name: "PostgreSQL",    icon: <SiPostgresql />,  color: "#336791" },
+  { name: "MySQL",         icon: <SiMysql />,       color: "#4479A1" },
+  { name: "Redis",         icon: <SiRedis />,       color: "#DC382D" },
+  { name: "SQLite",        icon: <SiSqlite />,      color: "#57AFDC" },
+  // ── DevOps (5) ────────────────────────────────────────────
+  { name: "Docker",        icon: <FaDocker />,      color: "#2496ED" },
+  { name: "AWS",           icon: <FaAws />,         color: "#FF9900" },
+  { name: "Git",           icon: <FaGitAlt />,      color: "#F05032" },
+  { name: "Vercel",        icon: <SiVercel />,      color: "#ffffff" },
+  { name: "Linux",         icon: <SiLinux />,       color: "#FCC624" },
 ];
 
 export default function TechStack() {
+  const { t } = useLang();
+
+  const categories = [
+    { label: "Frontend",          items: stack.slice(0, 8)   },
+    { label: "Backend",           items: stack.slice(8, 12)  },
+    { label: t.stack.database,    items: stack.slice(12, 17) },
+    { label: "DevOps",            items: stack.slice(17)     },
+  ];
+
   return (
-    <motion.section
-      className="max-w-4xl mx-auto my-16 bg-white/50 dark:bg-black/40 rounded-2xl shadow-xl p-8"
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.7 }}
-    >
-      <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white/90">Teknoloji Stack</h2>
-      <div className="flex flex-wrap gap-8 justify-center">
-        {stack.map((item, i) => (
-          <motion.div
-            key={item.name}
-            className="flex flex-col items-center group"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <div className="rounded-xl p-4 bg-white/70 dark:bg-[#181823]/80 shadow-lg group-hover:scale-110 transition cursor-pointer">{item.icon}</div>
-            <span className="mt-2 text-sm text-gray-700 dark:text-gray-200 opacity-80">{item.name}</span>
-          </motion.div>
-        ))}
+    <section id="stack" className="py-28 px-6 bg-black">
+      <div className="max-w-[1078px] mx-auto">
+
+        <motion.div
+          className="flex items-baseline gap-5 mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="section-number">03</span>
+          <h2 className="text-4xl md:text-5xl font-light text-white tracking-tight">{t.stack.heading}</h2>
+        </motion.div>
+
+        <div className="space-y-12">
+          {categories.map((cat, ci) => (
+            <motion.div
+              key={cat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.5, delay: ci * 0.08 }}
+            >
+              <h3 className="text-[11px] font-light text-white/28 uppercase tracking-[0.25em] mb-5">
+                {cat.label}
+              </h3>
+              <div className="flex flex-wrap gap-2.5">
+                {cat.items.map((item, i) => (
+                  <motion.div
+                    key={item.name}
+                    className="group flex items-center gap-2.5 px-4 py-2.5 rounded-pill border border-white/10 bg-white/[0.025] cursor-default hover:border-white/22 hover:bg-white/[0.045] transition-all duration-200"
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: ci * 0.08 + i * 0.04 }}
+                  >
+                    <span className="text-lg flex-shrink-0" style={{ color: item.color }}>
+                      {item.icon}
+                    </span>
+                    <span className="text-sm font-light text-white/60 group-hover:text-white/85 transition-colors whitespace-nowrap">
+                      {item.name}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          className="mt-20 h-px bg-white/6"
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        />
       </div>
-    </motion.section>
+    </section>
   );
 }
