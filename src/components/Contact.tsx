@@ -7,7 +7,9 @@ import { useLang } from "../context/LangContext";
 export default function Contact() {
   const { t } = useLang();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent]  = useState(false);
+  const [sent, setSent]   = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   const contactInfo = [
@@ -20,7 +22,11 @@ export default function Contact() {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (_e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
+
     if (btnRef.current) {
       animate(btnRef.current, {
         scale: [1, 0.96, 1],
@@ -28,7 +34,32 @@ export default function Contact() {
         easing: "easeInOutSine",
       } as any);
     }
-    setSent(true);
+
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/akinbas2002@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: t.contact.formSubject,
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+
+      if (res.ok) {
+        setSent(true);
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -122,14 +153,9 @@ export default function Contact() {
               </motion.div>
             ) : (
               <form
-                action="https://formsubmit.co/akinbas2002@gmail.com"
-                method="POST"
                 onSubmit={handleSubmit}
                 className="flex flex-col gap-8"
               >
-                <input type="hidden" name="_subject" value={t.contact.formSubject} />
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_template" value="table" />
 
                 <div>
                   <label htmlFor="name" className="block text-[11px] font-light text-white/32 uppercase tracking-[0.2em] mb-3">
@@ -179,10 +205,17 @@ export default function Contact() {
                   />
                 </div>
 
+                {error && (
+                  <p className="text-red-400/80 text-xs font-light text-center -mt-2">
+                    {t.contact.errorMsg ?? "Mesaj gönderilemedi. Lütfen tekrar deneyin."}
+                  </p>
+                )}
+
                 <button
                   ref={btnRef}
                   type="submit"
-                  className="relative w-full py-4 text-sm font-light tracking-[0.14em] overflow-hidden group rounded-xl transition-all duration-300 hover:scale-[1.015] active:scale-[0.98]"
+                  disabled={loading}
+                  className="relative w-full py-4 text-sm font-light tracking-[0.14em] overflow-hidden group rounded-xl transition-all duration-300 hover:scale-[1.015] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                   style={{
                     background: 'rgba(160, 224, 171, 0.06)',
                     border: '1px solid rgba(160, 224, 171, 0.28)',
@@ -191,18 +224,28 @@ export default function Contact() {
                     boxShadow: '0 0 28px rgba(160, 224, 171, 0.1), inset 0 1px 0 rgba(255,255,255,0.06)',
                   }}
                 >
-                  {/* Top edge highlight */}
                   <span className="absolute inset-x-0 top-0 h-px pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, rgba(160,224,171,0.45), transparent)' }} />
-                  {/* Hover shimmer sweep */}
                   <span
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                     style={{ background: 'linear-gradient(110deg, transparent 35%, rgba(160,224,171,0.07) 50%, transparent 65%)' }}
                   />
                   <span className="relative flex items-center justify-center gap-2.5">
-                    {t.contact.send}
-                    <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                        </svg>
+                        {t.contact.sending ?? "Gönderiliyor..."}
+                      </>
+                    ) : (
+                      <>
+                        {t.contact.send}
+                        <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </>
+                    )}
                   </span>
                 </button>
               </form>
